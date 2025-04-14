@@ -32,10 +32,10 @@ The system will enable users to:
 
 ---
 
-## 🛠️ Tech Stack (MERN)
+## 🛠️ Tech Stack (MySQL + MERN)
 - **Frontend**: React.js  
 - **Backend**: Node.js + Express.js  
-- **Database**: MongoDB  
+- **Database**: MongoDB/MySQL
 - **Authentication**: Google OAuth 2.0 / JWT  
 - **Real-time Communication**: Socket.io  
 - **Notifications**: Push API / WebSockets  
