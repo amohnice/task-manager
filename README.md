@@ -3,11 +3,11 @@
 A full-stack task management application built with the MERN stack (MongoDB, Express.js, React, Node.js).
 
 ## Group Members:
- BITCO1/2043/2022-Gavin Maleche
+BITCO1/2043/2022-Gavin Maleche
 C023/401257/2023-Ulira Dieudonne
-CO23 /401208 /2023 - Natasha wambui
+CO23/401208 /2023 - Natasha wambui
 C023/401196/2023- Richard Muhinda.      Vincent Ngisa -C023/401268/2023
- C023/401239/2023-Amos Korir
+C023/401239/2023-Amos Korir
 C023/401227/2023 Kiama Charles
 
 ## Features
