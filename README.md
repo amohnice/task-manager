@@ -2,7 +2,7 @@
 
 A full-stack task management application built with the MERN stack (MongoDB, Express.js, React, Node.js).
 
-# GROUP 4
+# GROUP 4(Software Engineering Project)
 
 ## Members:
 
@@ -17,18 +17,39 @@ A full-stack task management application built with the MERN stack (MongoDB, Exp
 
 ## Features
 
-- User Authentication (Login/Register)
-- Task Management
-  - Create, read, update, and delete tasks
-  - Assign tasks to team members
-  - Set task priorities and due dates
-  - Track task status
-- Team Management
-  - Create and manage teams
-  - Add/remove team members
-  - Assign roles (Admin, Member)
-- Dashboard with task overview
-- Responsive design with Material-UI
+### User Authentication
+- Secure login and registration
+- JWT-based authentication
+- Protected routes and API endpoints
+
+### Task Management
+- Create, read, update, and delete tasks
+- Assign tasks to team members
+- Set task priorities (Low, Medium, High)
+- Set due dates and deadlines
+- Track task status (To Do, In Progress, Completed)
+- Add comments to tasks
+- Receive notifications for task updates
+
+### Team Management
+- Create and manage teams
+- Add/remove team members
+- Assign roles (Admin, Member)
+- Team-specific task assignment
+- Team member notifications
+- Team-based access control
+
+### Dashboard
+- Overview of tasks and teams
+- Recent tasks and teams
+- Task status summary
+- Unread notifications count
+
+### Notifications
+- Task assignment notifications
+- Task status update notifications
+- Team invitation notifications
+- Task comment notifications
 
 ## Tech Stack
 
@@ -132,6 +153,7 @@ task-manager/
 - GET /api/tasks/:id - Get task by ID
 - PUT /api/tasks/:id - Update task
 - DELETE /api/tasks/:id - Delete task
+- POST /api/tasks/:id/comments - Add comment to task
 
 ### Teams
 - GET /api/teams - Get all teams
@@ -139,6 +161,13 @@ task-manager/
 - GET /api/teams/:id - Get team by ID
 - PUT /api/teams/:id - Update team
 - DELETE /api/teams/:id - Delete team
+- POST /api/teams/:id/members - Add member to team
+- DELETE /api/teams/:id/members - Remove member from team
+
+### Notifications
+- GET /api/notifications - Get user notifications
+- PUT /api/notifications/:id/read - Mark notification as read
+- DELETE /api/notifications/:id - Delete notification
 
 ## Contributing
 
@@ -148,4 +177,3 @@ task-manager/
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## end.
