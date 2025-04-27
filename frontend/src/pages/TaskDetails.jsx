@@ -27,7 +27,7 @@ import {
   Send as SendIcon,
 } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchTaskById, deleteTask, updateTask } from '../features/tasks/taskSlice';
+import { fetchTaskById, deleteTask, updateTask, addComment } from '../features/tasks/taskSlice';
 
 const TaskDetails = () => {
   const { id } = useParams();
@@ -55,9 +55,18 @@ const TaskDetails = () => {
     }
   };
 
-  const handleAddComment = () => {
-    // TODO: Implement comment functionality
-    setComment('');
+  const handleAddComment = async () => {
+    if (!comment.trim()) return;
+    
+    try {
+      await dispatch(addComment({
+        taskId: id,
+        comment: comment.trim()
+      })).unwrap();
+      setComment('');
+    } catch (error) {
+      console.error('Error adding comment:', error);
+    }
   };
 
   const handleStatusChange = async (e) => {
@@ -207,7 +216,7 @@ const TaskDetails = () => {
           </Grid>
         </Paper>
 
-        <Paper sx={{ p: 3 }}>
+        <Paper sx={{ p: 3, mt: 3 }}>
           <Typography variant="h6" gutterBottom>
             Comments
           </Typography>
@@ -229,7 +238,9 @@ const TaskDetails = () => {
                         {comment.text}
                       </Typography>
                       <br />
-                      {new Date(comment.createdAt).toLocaleString()}
+                      <Typography variant="caption" color="text.secondary">
+                        {new Date(comment.createdAt).toLocaleString()}
+                      </Typography>
                     </>
                   }
                 />
@@ -245,6 +256,12 @@ const TaskDetails = () => {
               placeholder="Add a comment..."
               value={comment}
               onChange={(e) => setComment(e.target.value)}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  handleAddComment();
+                }
+              }}
             />
             <IconButton
               color="primary"

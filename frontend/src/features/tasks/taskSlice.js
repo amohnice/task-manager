@@ -136,6 +136,35 @@ export const deleteTask = createAsyncThunk(
   }
 );
 
+// Add comment to task
+export const addComment = createAsyncThunk(
+  'tasks/addComment',
+  async ({ taskId, comment }, { dispatch, getState }) => {
+    try {
+      const { userInfo } = getState().auth;
+      const token = userInfo?.token || userInfo?.data?.token;
+      
+      if (!token) {
+        throw new Error('No token found');
+      }
+
+      const response = await axiosInstance.post(`/tasks/${taskId}/comments`, { text: comment });
+      
+      // Add notification for the comment
+      dispatch(addNotification({
+        type: 'task_comment',
+        message: `New comment on task "${response.data.title}"`,
+        taskId: response.data._id,
+        recipientId: response.data.assignedTo?._id,
+      }));
+
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.message || 'Error adding comment');
+    }
+  }
+);
+
 // Initial state
 const initialState = {
   tasks: localStorage.getItem('tasks') ? JSON.parse(localStorage.getItem('tasks')) : [],
@@ -229,6 +258,25 @@ const taskSlice = createSlice({
         state.currentTask = null;
       })
       .addCase(deleteTask.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // Add Comment
+      .addCase(addComment.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(addComment.fulfilled, (state, action) => {
+        state.loading = false;
+        state.tasks = state.tasks.map((task) =>
+          task._id === action.payload._id ? action.payload : task
+        );
+        if (state.currentTask?._id === action.payload._id) {
+          state.currentTask = action.payload;
+        }
+        state.error = null;
+      })
+      .addCase(addComment.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
