@@ -14,7 +14,6 @@ A full-stack task management application built with the MERN stack (MongoDB, Exp
 6. C023/401239/2023 - Amos Korir 
 7. C023/401227/2023 - Kiama Charles
 
-![Dashboard](image/dashboard.png)
 
 ## Features
 
