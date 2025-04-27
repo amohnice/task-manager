@@ -3,12 +3,12 @@
 A full-stack task management application built with the MERN stack (MongoDB, Express.js, React, Node.js).
 
 ## Group Members:
-## BITCO1/2043/2022-Gavin Maleche
-## C023/401257/2023-Ulira Dieudonne
-## CO23 /401208 /2023 - Natasha wambui
-## C023/401196/2023- Richard Muhinda.     ## Vincent Ngisa -C023/401268/2023
-## C023/401239/2023-Amos Korir
-## C023/401227/2023 Kiama Charles
+ BITCO1/2043/2022-Gavin Maleche
+C023/401257/2023-Ulira Dieudonne
+CO23 /401208 /2023 - Natasha wambui
+C023/401196/2023- Richard Muhinda.      Vincent Ngisa -C023/401268/2023
+ C023/401239/2023-Amos Korir
+C023/401227/2023 Kiama Charles
 
 ## Features
 
@@ -143,6 +143,3 @@ task-manager/
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
