@@ -8,7 +8,7 @@ A full-stack task management application built with the MERN stack (MongoDB, Exp
 
 1. BITCO1/2043/2022 - Gavin Maleche 
 2. C023/401257/2023 - Ulira Dieudonne 
-3. CO23/401208 /2023 - Natasha Wambui 
+3. CO23/401208/2023 - Natasha Wambui 
 4. C023/401196/2023 - Richard Muhinda               
 5. C023/401268/2023 - Vincent Ngisa
 6. C023/401239/2023 - Amos Korir 
