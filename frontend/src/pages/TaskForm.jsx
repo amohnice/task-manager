@@ -28,7 +28,7 @@ const TaskForm = () => {
   const { users = [] } = useSelector((state) => state.users);
   const { teams = [] } = useSelector((state) => state.teams);
 
-  const [formData, setFormData] = useState({
+  const initialFormData = {
     title: '',
     description: '',
     status: 'todo',
@@ -36,7 +36,9 @@ const TaskForm = () => {
     deadline: '',
     assignedTo: '',
     team: '',
-  });
+  };
+
+  const [formData, setFormData] = useState(initialFormData);
 
   useEffect(() => {
     const token = userInfo?.token || userInfo?.data?.token;
@@ -54,24 +56,29 @@ const TaskForm = () => {
   }, [dispatch, id, navigate, userInfo]);
 
   useEffect(() => {
-    if (currentTask && id) {
-      setFormData({
-        title: currentTask.title,
-        description: currentTask.description,
-        status: currentTask.status,
-        priority: currentTask.priority,
-        deadline: currentTask.deadline ? new Date(currentTask.deadline).toISOString().split('T')[0] : '',
-        assignedTo: currentTask.assignedTo?._id || '',
-        team: currentTask.team?._id || '',
-      });
+    if (id) {
+      if (currentTask) {
+        setFormData({
+          title: currentTask.title || '',
+          description: currentTask.description || '',
+          status: currentTask.status || 'todo',
+          priority: currentTask.priority || 'medium',
+          deadline: currentTask.deadline ? new Date(currentTask.deadline).toISOString().split('T')[0] : '',
+          assignedTo: currentTask.assignedTo?._id || '',
+          team: currentTask.team?._id || '',
+        });
+      }
+    } else {
+      setFormData(initialFormData);
     }
   }, [currentTask, id]);
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const handleSubmit = (e) => {

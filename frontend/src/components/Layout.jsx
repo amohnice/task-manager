@@ -25,6 +25,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../features/auth/authSlice';
+import NotificationMenu from './NotificationMenu';
 
 const drawerWidth = 240;
 
@@ -98,9 +99,7 @@ const Layout = () => {
           <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
             {userInfo?.name}
           </Typography>
-          <IconButton color="inherit">
-            <NotificationsIcon />
-          </IconButton>
+          <NotificationMenu />
           <Button color="inherit" onClick={handleLogout}>
             Logout
           </Button>

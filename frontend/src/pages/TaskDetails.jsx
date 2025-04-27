@@ -16,6 +16,10 @@ import {
   Avatar,
   IconButton,
   Grid,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from '@mui/material';
 import {
   Edit as EditIcon,
@@ -23,18 +27,26 @@ import {
   Send as SendIcon,
 } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchTaskById, deleteTask } from '../features/tasks/taskSlice';
+import { fetchTaskById, deleteTask, updateTask } from '../features/tasks/taskSlice';
 
 const TaskDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { currentTask: task, loading, error } = useSelector((state) => state.tasks);
+  const { userInfo } = useSelector((state) => state.auth);
   const [comment, setComment] = useState('');
+  const [status, setStatus] = useState('');
 
   useEffect(() => {
     dispatch(fetchTaskById(id));
   }, [dispatch, id]);
+
+  useEffect(() => {
+    if (task) {
+      setStatus(task.status);
+    }
+  }, [task]);
 
   const handleDelete = () => {
     if (window.confirm('Are you sure you want to delete this task?')) {
@@ -48,9 +60,24 @@ const TaskDetails = () => {
     setComment('');
   };
 
+  const handleStatusChange = async (e) => {
+    const newStatus = e.target.value;
+    setStatus(newStatus);
+    
+    try {
+      await dispatch(updateTask({
+        taskId: id,
+        taskData: { status: newStatus }
+      })).unwrap();
+    } catch (error) {
+      console.error('Error updating task status:', error);
+      setStatus(task.status); // Revert on error
+    }
+  };
+
   const getStatusColor = (status) => {
     switch (status) {
-      case 'pending':
+      case 'todo':
         return 'warning';
       case 'in-progress':
         return 'info';
@@ -60,6 +87,8 @@ const TaskDetails = () => {
         return 'default';
     }
   };
+
+  const isAssignedUser = task?.assignedTo?._id === (userInfo?._id || userInfo?.data?._id);
 
   if (loading) {
     return (
@@ -125,11 +154,25 @@ const TaskDetails = () => {
               <Typography variant="subtitle1" color="text.secondary">
                 Status
               </Typography>
-              <Chip
-                label={task.status}
-                color={getStatusColor(task.status)}
-                size="small"
-              />
+              {isAssignedUser ? (
+                <FormControl fullWidth>
+                  <Select
+                    value={status}
+                    onChange={handleStatusChange}
+                    size="small"
+                  >
+                    <MenuItem value="todo">To Do</MenuItem>
+                    <MenuItem value="in-progress">In Progress</MenuItem>
+                    <MenuItem value="completed">Completed</MenuItem>
+                  </Select>
+                </FormControl>
+              ) : (
+                <Chip
+                  label={task.status}
+                  color={getStatusColor(task.status)}
+                  size="small"
+                />
+              )}
             </Grid>
             <Grid item xs={12} sm={6}>
               <Typography variant="subtitle1" color="text.secondary">
@@ -152,7 +195,7 @@ const TaskDetails = () => {
                 Due Date
               </Typography>
               <Typography>
-                {new Date(task.dueDate).toLocaleDateString()}
+                {new Date(task.deadline).toLocaleDateString()}
               </Typography>
             </Grid>
             <Grid item xs={12} sm={6}>

@@ -1,22 +1,25 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../../utils/axios';
+import { addNotification } from '../notifications/notificationSlice';
 
 // Fetch all tasks
 export const fetchTasks = createAsyncThunk(
   'tasks/fetchTasks',
-  async (_, { getState }) => {
-    const userInfo = getState().auth.userInfo;
-    
-    if (!userInfo?.data?.token) {
-      throw new Error('No authentication token found');
-    }
-
+  async (_, { getState, rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get('/tasks');
-      return response.data.data || [];
+      const { userInfo } = getState().auth;
+      const token = userInfo?.token || userInfo?.data?.token;
+      
+      if (!token) {
+        throw new Error('No token found');
+      }
+
+      const { data } = await axiosInstance.get('/tasks');
+      return data.data;
     } catch (error) {
-      console.error('Error fetching tasks:', error.response?.data || error.message);
-      throw error;
+      return rejectWithValue(
+        error.response?.data?.message || 'Error fetching tasks'
+      );
     }
   }
 );
@@ -35,38 +38,94 @@ export const fetchTaskById = createAsyncThunk(
   }
 );
 
+// Create task
 export const createTask = createAsyncThunk(
   'tasks/createTask',
-  async (taskData, { rejectWithValue }) => {
+  async (taskData, { dispatch, getState }) => {
     try {
-      const { data } = await axiosInstance.post('/tasks', taskData);
-      return data.data;
+      const { userInfo } = getState().auth;
+      const token = userInfo?.token || userInfo?.data?.token;
+      
+      if (!token) {
+        throw new Error('No token found');
+      }
+
+      const response = await axiosInstance.post('/tasks', taskData);
+      
+      // Add notification for task creation and assignment
+      if (taskData.assignedTo) {
+        dispatch(addNotification({
+          type: 'task_assigned',
+          message: `New task "${taskData.title}" has been assigned to you`,
+          taskId: response.data._id,
+          recipientId: taskData.assignedTo,
+        }));
+      }
+
+      return response.data;
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || 'Error creating task'
-      );
+      throw new Error(error.response?.data?.message || 'Error creating task');
     }
   }
 );
 
+// Update task
 export const updateTask = createAsyncThunk(
   'tasks/updateTask',
-  async ({ taskId, taskData }, { rejectWithValue }) => {
+  async ({ taskId, taskData }, { dispatch, getState }) => {
     try {
-      const { data } = await axiosInstance.put(`/tasks/${taskId}`, taskData);
-      return data.data;
+      const { userInfo } = getState().auth;
+      const token = userInfo?.token || userInfo?.data?.token;
+      
+      if (!token) {
+        throw new Error('No token found');
+      }
+
+      const response = await axiosInstance.put(`/tasks/${taskId}`, taskData);
+      
+      // Add notifications for task updates
+      if (taskData.status === 'completed') {
+        dispatch(addNotification({
+          type: 'task_completed',
+          message: `Task "${response.data.title}" has been completed`,
+          taskId: response.data._id,
+          recipientId: response.data.assignedTo?._id,
+        }));
+      } else if (taskData.assignedTo && taskData.assignedTo !== response.data.assignedTo?._id) {
+        dispatch(addNotification({
+          type: 'task_reassigned',
+          message: `Task "${response.data.title}" has been reassigned to you`,
+          taskId: response.data._id,
+          recipientId: taskData.assignedTo,
+        }));
+      } else if (taskData.status && taskData.status !== response.data.status) {
+        dispatch(addNotification({
+          type: 'task_updated',
+          message: `Task status updated: ${response.data.title}`,
+          taskId: response.data._id,
+          recipientId: response.data.assignedTo?._id,
+        }));
+      }
+
+      return response.data;
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || 'Error updating task'
-      );
+      throw new Error(error.response?.data?.message || 'Error updating task');
     }
   }
 );
 
+// Delete task
 export const deleteTask = createAsyncThunk(
   'tasks/deleteTask',
-  async (taskId, { rejectWithValue }) => {
+  async (taskId, { getState, rejectWithValue }) => {
     try {
+      const { userInfo } = getState().auth;
+      const token = userInfo?.token || userInfo?.data?.token;
+      
+      if (!token) {
+        throw new Error('No token found');
+      }
+
       await axiosInstance.delete(`/tasks/${taskId}`);
       return taskId;
     } catch (error) {
@@ -106,7 +165,7 @@ const taskSlice = createSlice({
       })
       .addCase(fetchTasks.fulfilled, (state, action) => {
         state.loading = false;
-        state.tasks = Array.isArray(action.payload) ? action.payload : [];
+        state.tasks = action.payload;
         localStorage.setItem('tasks', JSON.stringify(state.tasks));
         state.error = null;
       })

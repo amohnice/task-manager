@@ -104,7 +104,7 @@ const Dashboard = () => {
                 Overview
               </Typography>
               <List>
-                <ListItem>
+                <ListItem key="total-tasks">
                   <ListItemAvatar>
                     <Avatar>
                       <TaskIcon />
@@ -115,7 +115,7 @@ const Dashboard = () => {
                     secondary={tasksData.length}
                   />
                 </ListItem>
-                <ListItem>
+                <ListItem key="total-teams">
                   <ListItemAvatar>
                     <Avatar>
                       <GroupIcon />
@@ -126,7 +126,7 @@ const Dashboard = () => {
                     secondary={teamsData.length}
                   />
                 </ListItem>
-                <ListItem>
+                <ListItem key="notifications">
                   <ListItemAvatar>
                     <Avatar>
                       <NotificationsIcon />
@@ -178,7 +178,7 @@ const Dashboard = () => {
                   </ListItem>
                 ))}
                 {recentTasks.length === 0 && (
-                  <ListItem>
+                  <ListItem key="no-tasks">
                     <ListItemText primary="No tasks found" />
                   </ListItem>
                 )}
@@ -211,7 +211,7 @@ const Dashboard = () => {
                   </ListItem>
                 ))}
                 {recentTeams.length === 0 && (
-                  <ListItem>
+                  <ListItem key="no-teams">
                     <ListItemText primary="No teams found" />
                   </ListItem>
                 )}

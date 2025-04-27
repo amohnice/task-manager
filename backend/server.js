@@ -27,11 +27,13 @@ const authRoutes = require('./routes/auth');
 const taskRoutes = require('./routes/tasks');
 const teamRoutes = require('./routes/teams');
 const userRoutes = require('./routes/userRoutes');
+const notificationRoutes = require('./routes/notifications');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/tasks', taskRoutes);
 app.use('/api/teams', teamRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

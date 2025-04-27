@@ -55,7 +55,7 @@ const TeamForm = () => {
       setFormData({
         name: currentTeam.name || '',
         description: currentTeam.description || '',
-        members: currentTeam.members || [],
+        members: currentTeam.members?.map(member => member.user) || [],
       });
     }
   }, [currentTeam, id]);
@@ -72,8 +72,8 @@ const TeamForm = () => {
       const teamData = {
         ...formData,
         members: formData.members.map(member => ({
-          user: member.user?._id || member.user,
-          role: member.role || 'member'
+          user: member._id,
+          role: 'member'
         }))
       };
 
@@ -133,16 +133,10 @@ const TeamForm = () => {
           <Autocomplete
             multiple
             options={users || []}
-            getOptionLabel={(option) => option.name || ''}
-            value={formData.members.map(member => member.user)}
+            getOptionLabel={(option) => `${option.name} (${option.email})`}
+            value={formData.members}
             onChange={(_, newValue) => {
-              setFormData({ 
-                ...formData, 
-                members: newValue.map(user => ({
-                  user: user._id,
-                  role: 'member'
-                }))
-              });
+              setFormData({ ...formData, members: newValue });
             }}
             isOptionEqualToValue={(option, value) => option._id === value._id}
             renderInput={(params) => (
