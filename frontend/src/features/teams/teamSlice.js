@@ -6,20 +6,15 @@ export const fetchTeams = createAsyncThunk(
   'teams/fetchTeams',
   async (_, { getState }) => {
     const userInfo = getState().auth.userInfo;
-    console.log('Fetching teams with user info:', userInfo);
-    
     const token = userInfo?.token || userInfo?.data?.token;
     if (!token) {
-      console.error('No authentication token found');
       throw new Error('No authentication token found');
     }
 
     try {
       const response = await axiosInstance.get('/teams');
-      console.log('Teams response:', response.data);
-      return response.data.data || [];
+      return response.data;
     } catch (error) {
-      console.error('Error fetching teams:', error.response?.data || error.message);
       throw error;
     }
   }
@@ -116,7 +111,7 @@ const teamSlice = createSlice({
       })
       .addCase(fetchTeams.fulfilled, (state, action) => {
         state.loading = false;
-        state.teams = action.payload;
+        state.teams = action.payload.data || [];
       })
       .addCase(fetchTeams.rejected, (state, action) => {
         state.loading = false;

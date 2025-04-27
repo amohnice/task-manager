@@ -55,14 +55,14 @@ const notificationSlice = createSlice({
       // Always add the notification to the state
       state.notifications.unshift({
         ...notification,
-        id: Date.now(),
+        _id: Date.now().toString(),
         read: false,
-        timestamp: new Date().toISOString(),
+        createdAt: new Date().toISOString(),
       });
       state.unreadCount += 1;
     },
     markAsRead: (state, action) => {
-      const notification = state.notifications.find(n => n.id === action.payload);
+      const notification = state.notifications.find(n => n._id === action.payload);
       if (notification && !notification.read) {
         notification.read = true;
         state.unreadCount -= 1;
@@ -105,7 +105,7 @@ const notificationSlice = createSlice({
       })
       .addCase(markNotificationAsRead.fulfilled, (state, action) => {
         state.loading = false;
-        const notification = state.notifications.find(n => n.id === action.payload.id);
+        const notification = state.notifications.find(n => n._id === action.payload._id);
         if (notification && !notification.read) {
           notification.read = true;
           state.unreadCount -= 1;

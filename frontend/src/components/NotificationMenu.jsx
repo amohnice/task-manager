@@ -102,8 +102,8 @@ const NotificationMenu = () => {
         ) : (
           notifications.map((notification) => (
             <MenuItem
-              key={notification.id || notification._id}
-              onClick={() => handleMarkAsRead(notification.id || notification._id)}
+              key={notification._id}
+              onClick={() => handleMarkAsRead(notification._id)}
               sx={{
                 bgcolor: notification.read ? 'inherit' : 'action.hover',
                 py: 1.5,

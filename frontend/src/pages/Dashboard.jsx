@@ -23,24 +23,34 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchTasks } from '../features/tasks/taskSlice';
 import { fetchTeams } from '../features/teams/teamSlice';
+import { fetchNotifications } from '../features/notifications/notificationSlice';
 
 const Dashboard = () => {
   const dispatch = useDispatch();
   const { tasks = [], loading: tasksLoading, error: tasksError } = useSelector((state) => state.tasks);
   const { teams = [], loading: teamsLoading, error: teamsError } = useSelector((state) => state.teams);
+  const { notifications = [], unreadCount = 0, loading: notificationsLoading } = useSelector((state) => state.notifications);
   const { userInfo } = useSelector((state) => state.auth);
 
   const fetchData = useCallback(() => {
-    const token = userInfo?.data?.token;
+    const token = userInfo?.token || userInfo?.data?.token;
     if (token) {
       dispatch(fetchTasks());
       dispatch(fetchTeams());
+      dispatch(fetchNotifications());
     }
-  }, [dispatch, userInfo?.data?.token]);
+  }, [dispatch, userInfo]);
 
   useEffect(() => {
     fetchData();
   }, [fetchData]);
+
+  // Add a separate effect to handle auth state changes
+  useEffect(() => {
+    if (userInfo?.token || userInfo?.data?.token) {
+      fetchData();
+    }
+  }, [userInfo, fetchData]);
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -64,9 +74,9 @@ const Dashboard = () => {
     return date.toLocaleDateString();
   };
 
-  // Ensure we're working with arrays and handle the data structure correctly
-  const tasksData = Array.isArray(tasks) ? tasks : tasks.data || [];
-  const teamsData = Array.isArray(teams) ? teams : teams.data || [];
+  // Ensure we're working with arrays
+  const tasksData = Array.isArray(tasks) ? tasks : [];
+  const teamsData = Array.isArray(teams) ? teams : [];
 
   const recentTasks = [...tasksData]
     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
@@ -134,7 +144,7 @@ const Dashboard = () => {
                   </ListItemAvatar>
                   <ListItemText
                     primary="Notifications"
-                    secondary="0 unread"
+                    secondary={`${unreadCount} unread`}
                   />
                 </ListItem>
               </List>

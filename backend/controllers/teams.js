@@ -7,10 +7,8 @@ const Notification = require('../models/Notification');
 // @access  Private
 exports.getTeams = async (req, res) => {
   try {
-    // Find teams where the user is a member
-    const teams = await Team.find({
-      'members.user': req.user.id
-    })
+    // Find all teams
+    const teams = await Team.find()
     .populate('members.user', 'name email')
     .populate('createdBy', 'name email')
     .sort('-createdAt');
