@@ -37,7 +37,8 @@ const TeamForm = () => {
   });
 
   useEffect(() => {
-    if (!userInfo?.data?.token) {
+    const token = userInfo?.token || userInfo?.data?.token;
+    if (!token) {
       navigate('/login');
       return;
     }
@@ -61,7 +62,8 @@ const TeamForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!userInfo?.data?.token) {
+    const token = userInfo?.token || userInfo?.data?.token;
+    if (!token) {
       navigate('/login');
       return;
     }

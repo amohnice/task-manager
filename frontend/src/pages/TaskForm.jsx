@@ -12,9 +12,12 @@ import {
   MenuItem,
   Grid,
   Alert,
+  Autocomplete,
 } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { createTask, updateTask, fetchTaskById } from '../features/tasks/taskSlice';
+import { fetchUsers } from '../features/users/userSlice';
+import { fetchTeams } from '../features/teams/teamSlice';
 
 const TaskForm = () => {
   const navigate = useNavigate();
@@ -22,6 +25,8 @@ const TaskForm = () => {
   const { id } = useParams();
   const { loading, error, currentTask } = useSelector((state) => state.tasks);
   const { userInfo } = useSelector((state) => state.auth);
+  const { users = [] } = useSelector((state) => state.users);
+  const { teams = [] } = useSelector((state) => state.teams);
 
   const [formData, setFormData] = useState({
     title: '',
@@ -34,10 +39,19 @@ const TaskForm = () => {
   });
 
   useEffect(() => {
+    const token = userInfo?.token || userInfo?.data?.token;
+    if (!token) {
+      navigate('/login');
+      return;
+    }
+
+    dispatch(fetchUsers());
+    dispatch(fetchTeams());
+
     if (id) {
       dispatch(fetchTaskById(id));
     }
-  }, [dispatch, id]);
+  }, [dispatch, id, navigate, userInfo]);
 
   useEffect(() => {
     if (currentTask && id) {
@@ -84,6 +98,11 @@ const TaskForm = () => {
     }
     navigate('/tasks');
   };
+
+  // Get team members for the selected team
+  const selectedTeam = teams.find(team => team._id === formData.team);
+  const teamMembers = selectedTeam?.members?.map(member => member.user) || [];
+  const availableUsers = formData.team ? teamMembers : users;
 
   return (
     <Container maxWidth="md">
@@ -177,6 +196,25 @@ const TaskForm = () => {
 
             <Grid item xs={12} sm={6}>
               <FormControl fullWidth>
+                <InputLabel>Team</InputLabel>
+                <Select
+                  name="team"
+                  value={formData.team}
+                  onChange={handleChange}
+                  label="Team"
+                >
+                  <MenuItem value="">No Team</MenuItem>
+                  {teams.map((team) => (
+                    <MenuItem key={team._id} value={team._id}>
+                      {team.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+
+            <Grid item xs={12}>
+              <FormControl fullWidth>
                 <InputLabel>Assign To</InputLabel>
                 <Select
                   name="assignedTo"
@@ -185,7 +223,11 @@ const TaskForm = () => {
                   label="Assign To"
                 >
                   <MenuItem value="">Unassigned</MenuItem>
-                  {/* TODO: Add team members list */}
+                  {availableUsers.map((user) => (
+                    <MenuItem key={user._id} value={user._id}>
+                      {user.name} ({user.email})
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             </Grid>

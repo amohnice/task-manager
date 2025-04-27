@@ -8,7 +8,8 @@ export const fetchTeams = createAsyncThunk(
     const userInfo = getState().auth.userInfo;
     console.log('Fetching teams with user info:', userInfo);
     
-    if (!userInfo?.token) {
+    const token = userInfo?.token || userInfo?.data?.token;
+    if (!token) {
       console.error('No authentication token found');
       throw new Error('No authentication token found');
     }
@@ -29,8 +30,8 @@ export const fetchTeamById = createAsyncThunk(
   'teams/fetchTeamById',
   async (teamId, { getState }) => {
     const userInfo = getState().auth.userInfo;
-    
-    if (!userInfo?.token) {
+    const token = userInfo?.token || userInfo?.data?.token;
+    if (!token) {
       throw new Error('No authentication token found');
     }
 
@@ -49,7 +50,8 @@ export const createTeam = createAsyncThunk(
   'teams/createTeam',
   async (teamData, { getState }) => {
     const userInfo = getState().auth.userInfo;
-    if (!userInfo?.token) {
+    const token = userInfo?.token || userInfo?.data?.token;
+    if (!token) {
       throw new Error('No authentication token found');
     }
 
@@ -63,7 +65,8 @@ export const updateTeam = createAsyncThunk(
   'teams/updateTeam',
   async ({ teamId, teamData }, { getState }) => {
     const userInfo = getState().auth.userInfo;
-    if (!userInfo?.token) {
+    const token = userInfo?.token || userInfo?.data?.token;
+    if (!token) {
       throw new Error('No authentication token found');
     }
 
@@ -77,7 +80,8 @@ export const deleteTeam = createAsyncThunk(
   'teams/deleteTeam',
   async (teamId, { getState }) => {
     const userInfo = getState().auth.userInfo;
-    if (!userInfo?.token) {
+    const token = userInfo?.token || userInfo?.data?.token;
+    if (!token) {
       throw new Error('No authentication token found');
     }
 

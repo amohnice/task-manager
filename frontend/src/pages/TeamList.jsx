@@ -34,7 +34,11 @@ const TeamList = () => {
   const [selectedTeam, setSelectedTeam] = useState(null);
 
   useEffect(() => {
-    if (!userInfo?.data?.token) {
+    // Get the token from either location
+    const token = userInfo?.token || userInfo?.data?.token;
+    
+    if (!token) {
+      console.log('No token found, redirecting to login');
       navigate('/login');
       return;
     }

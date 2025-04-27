@@ -23,7 +23,7 @@ axiosInstance.interceptors.request.use(
 
     try {
       const parsedUserInfo = JSON.parse(userInfo);
-      const token = parsedUserInfo.token;
+      const token = parsedUserInfo.token || parsedUserInfo.data?.token;
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
       } else {

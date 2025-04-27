@@ -19,7 +19,8 @@ const TeamDetails = () => {
   const { currentTeam, loading, error } = useSelector((state) => state.teams);
 
   useEffect(() => {
-    if (!userInfo?.data?.token) {
+    const token = userInfo?.token || userInfo?.data?.token;
+    if (!token) {
       navigate('/login');
       return;
     }
