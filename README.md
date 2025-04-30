@@ -2,6 +2,8 @@
 
 A full-stack task management application built with the MERN stack (MongoDB, Express.js, React, Node.js).
 
+![Dashboard](image/dashboard.png)
+
 # GROUP 4(Software Engineering Project)
 
 ## Members:
