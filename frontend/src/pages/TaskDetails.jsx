@@ -48,10 +48,15 @@ const TaskDetails = () => {
     }
   }, [task]);
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (window.confirm('Are you sure you want to delete this task?')) {
-      dispatch(deleteTask(id));
-      navigate('/tasks');
+      try {
+        await dispatch(deleteTask(id)).unwrap();
+        navigate('/tasks');
+      } catch (error) {
+        console.error('Error deleting task:', error);
+        // Error is already handled by the slice
+      }
     }
   };
 

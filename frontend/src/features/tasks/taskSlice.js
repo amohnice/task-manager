@@ -253,9 +253,10 @@ const taskSlice = createSlice({
       })
       .addCase(deleteTask.fulfilled, (state, action) => {
         state.loading = false;
-        state.tasks = state.tasks.filter((task) => task._id !== action.payload);
+        state.tasks = state.tasks.filter(task => task._id !== action.payload);
         localStorage.setItem('tasks', JSON.stringify(state.tasks));
         state.currentTask = null;
+        state.error = null;
       })
       .addCase(deleteTask.rejected, (state, action) => {
         state.loading = false;
