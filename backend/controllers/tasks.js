@@ -144,7 +144,7 @@ exports.updateTask = async (req, res) => {
 // @access  Private
 exports.deleteTask = async (req, res) => {
   try {
-    const task = await Task.deleteOne({_id:req.params.id});
+    const task = await Task.deleteOne({ _id:req.params.id});
 
     if (!task) {
       return res.status(404).json({
